@@ -1,3 +1,6 @@
+const CategoryRepository = require('../infrastructure/database/index').category
+
+
 class Category {
   constructor({ id, description, name, createdAt, updatedAt, version }) {
     this.id = id
@@ -9,7 +12,14 @@ class Category {
   }
 
   add() {
-    // TODO
+    return CategoryRepository.create({
+      description: this.description,
+      name: this.name
+    }).then(r => {
+      return Promise.resolve({ id: r.id })
+    }).catch(err => {
+      return Promise.reject(err)
+    })
   }
 
   update() {
@@ -21,6 +31,10 @@ class Category {
   }
 
   findById() {
+    // TODO
+  }
+
+  findAll() {
     // TODO
   }
 
