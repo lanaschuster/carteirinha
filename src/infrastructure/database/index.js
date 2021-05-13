@@ -7,7 +7,7 @@ const { applyAssociations } = require('./associations')
 
 let db = {}
 const basename = path.basename(module.filename)
-const modelsPath = `${process.cwd()}\\src\\entities\\models`
+const modelsPath = `${process.cwd()}\\src\\models`
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,

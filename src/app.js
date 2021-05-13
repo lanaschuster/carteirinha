@@ -1,3 +1,7 @@
+/**
+ * 
+ * Arquivo de configuração do Express
+ */
 require('reflect-metadata')
 const express = require('express')
 const morgan = require('morgan')
@@ -6,7 +10,7 @@ const flash = require('express-flash')
 const session = require('express-session')
 const cors = require('cors')
 
-// const routes = require('./controllers/routes')
+const routes = require('./controllers/index')
 
 // import { initPassport } from './infrastructure/passport/index'
 // initPassport(passport)
@@ -30,6 +34,6 @@ app.use(
 // app.use(passport.initialize())
 // app.use(passport.session())
 
-// routes(app)
+routes(app)
 
 module.exports = app

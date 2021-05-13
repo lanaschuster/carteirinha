@@ -1,5 +1,5 @@
 module.exports = (Sequelize, sequelize) => {
-  return sequelize.define('expense', {
+  return sequelize.define('incoming', {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
@@ -16,5 +16,11 @@ module.exports = (Sequelize, sequelize) => {
     date: {
       type: Sequelize.DATE
     }
+  }, {
+    tableName: 'incomings',
+    freezeTableName: true,
+    version: 'version',
+    createdAt: 'createdAt',
+    updateAt: 'updateAt'
   })
 }
