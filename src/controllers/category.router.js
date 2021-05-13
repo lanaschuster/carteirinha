@@ -5,15 +5,15 @@ const db = require('../infrastructure/database/index')
 
 const router = Router()
 
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
   try {
     res.status(200).json({ message: 'category endpoint !' })
   } catch (error) {
-    res.status(400).send(error)
+    next(error)
   }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   let transaction
   
   try {
@@ -25,7 +25,7 @@ router.post('/', async (req, res) => {
     res.status(201).json(result)
   } catch (error) {
     if (transaction) await transaction.rollback()
-    res.status(400).send(error)
+    next(error)
   }
 })
 
