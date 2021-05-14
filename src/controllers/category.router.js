@@ -5,9 +5,10 @@ const db = require('../infrastructure/database/index')
 
 const router = Router()
 
-router.get('/', (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
-    res.status(200).json({ message: 'category endpoint !' })
+    const list = await Category.findAll()
+    res.status(200).json(list)
   } catch (error) {
     next(error)
   }

@@ -4,6 +4,7 @@ const NotFoundException = require('../entities/errors/NotFoundException')
 const routes = (app) => {
   app.use('/api/categories', categoryRouter)
   
+  /* error handler */
   app.use((error, req, res, next) => {
     if (error instanceof NotFoundException) {
       res.status(404).json({

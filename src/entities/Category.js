@@ -1,5 +1,5 @@
 const CategoryRepository = require('../infrastructure/database/index').category
-
+const InvalidArgumentException = require('../entities/errors/InvalidArgumentException')
 
 class Category {
   constructor({ id, description, name, createdAt, updatedAt, version }) {
@@ -11,7 +11,19 @@ class Category {
     this.version = version
   }
 
+  validate() {
+    const fields = ['name', 'description']
+    fields.forEach(field => {
+      const value = this[field]
+
+      if (typeof value !== 'string' || value.length === 0) {
+        throw new InvalidArgumentException(field)
+      }
+    })
+  }
+
   add() {
+    this.validate()
     return CategoryRepository.create({
       description: this.description,
       name: this.name
@@ -30,15 +42,15 @@ class Category {
     // TODO
   }
 
-  findById() {
+  static findById() {
     // TODO
   }
 
-  findAll() {
-    // TODO
+  static async findAll() {
+    return await CategoryRepository.findAll()
   }
 
-  find() {
+  static find() {
     // TODO busca paginada
   }
 }
