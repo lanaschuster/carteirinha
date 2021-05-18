@@ -17,7 +17,7 @@ module.exports = (Sequelize, sequelize) => {
       type: Sequelize.DATE
     }
   }, {
-    tableName: 'incomings',
+    tableName: 'business.incomings',
     freezeTableName: true,
     version: 'version',
     createdAt: 'createdAt',

@@ -18,7 +18,7 @@ module.exports = (Sequelize, sequelize) => {
       type: Sequelize.ENUM(['INCOME', 'EXPENSE'])
     }
   }, {
-    tableName: 'categories',
+    tableName: 'business.categories',
     freezeTableName: true,
     version: 'version',
     createdAt: 'createdAt',

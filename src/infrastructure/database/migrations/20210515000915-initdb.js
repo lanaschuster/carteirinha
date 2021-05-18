@@ -25,6 +25,10 @@ module.exports = {
           type: Sequelize.STRING(60),
           allowNull: false
         },
+        version: {
+          type: Sequelize.INTEGER,
+          allowNull: false
+        },
         name: {
           type: Sequelize.STRING(14),
           allowNull: false
@@ -51,6 +55,10 @@ module.exports = {
         allowNull: false,
         primaryKey: true
       },
+      version: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
       name: {
         type: Sequelize.STRING(20),
         allowNull: false
@@ -72,7 +80,7 @@ module.exports = {
       }
     }, {
       charset: 'utf8',
-      schema: 'business',
+      schema: 'user',
       collate: 'utf8_swedish_ci'
     })
 
@@ -83,6 +91,10 @@ module.exports = {
           autoIncrement: true,
           allowNull: false,
           primaryKey: true
+        },
+        version: {
+          type: Sequelize.INTEGER,
+          allowNull: false
         },
         createdAt: {
           type: Sequelize.DATE,
@@ -113,9 +125,11 @@ module.exports = {
         userId: {
           type: Sequelize.INTEGER,
           references: {
-            model: 'business.users',
+            model: 'user.users',
             key: 'id'
           },
+          onDelete: 'cascade',
+          onUpdate: 'cascade'
         }
       }, 
       {
@@ -131,6 +145,10 @@ module.exports = {
         autoIncrement: true,
         allowNull: false,
         primaryKey: true
+      },
+      version: {
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       description: {
         type: Sequelize.STRING(45)
@@ -152,9 +170,11 @@ module.exports = {
       userId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'business.users',
+          model: 'user.users',
           key: 'id'
         },
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
       }
     }, {
       charset: 'utf8',

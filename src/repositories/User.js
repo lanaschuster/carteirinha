@@ -26,7 +26,7 @@ module.exports = (Sequelize, sequelize) => {
       type: Sequelize.STRING
     }
   }, {
-    tableName: 'users',
+    tableName: 'user.users',
     freezeTableName: true,
     version: 'version',
     createdAt: 'createdAt',
