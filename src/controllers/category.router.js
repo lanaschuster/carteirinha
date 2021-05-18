@@ -1,7 +1,7 @@
 const Router = require('express')
 
 const Category = require('../entities/Category')
-const db = require('../infrastructure/database/index')
+const db = require('../infrastructure/database/setup')
 
 const router = Router()
 

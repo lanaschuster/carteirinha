@@ -1,4 +1,4 @@
-const CategoryRepository = require('../infrastructure/database/index').category
+const CategoryRepository = require('../infrastructure/database/setup').category
 const InvalidArgumentException = require('../entities/errors/InvalidArgumentException')
 
 class Category {

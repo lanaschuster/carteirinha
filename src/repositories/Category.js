@@ -13,6 +13,9 @@ module.exports = (Sequelize, sequelize) => {
     name: {
       type: Sequelize.STRING,
       allowNull: false
+    },
+    type: {
+      type: Sequelize.ENUM(['INCOME', 'EXPENSE'])
     }
   }, {
     tableName: 'categories',
