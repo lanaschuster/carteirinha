@@ -2,10 +2,11 @@ const CategoryRepository = require('../infrastructure/database/setup').category
 const InvalidArgumentException = require('../entities/errors/InvalidArgumentException')
 
 class Category {
-  constructor({ id, description, name, createdAt, updatedAt, version }) {
+  constructor({ id, description, name, type, createdAt, updatedAt, version }) {
     this.id = id
     this.description = description
     this.name = name
+    this.type = type
     this.createdAt = createdAt
     this.updatedAt = updatedAt
     this.version = version
@@ -26,7 +27,8 @@ class Category {
     this.validate()
     return CategoryRepository.create({
       description: this.description,
-      name: this.name
+      name: this.name,
+      type: this.type
     }).then(r => {
       return Promise.resolve({ id: r.id })
     }).catch(err => {
