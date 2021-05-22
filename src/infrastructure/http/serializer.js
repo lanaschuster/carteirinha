@@ -15,6 +15,10 @@ class Serializer {
   }
 
   serialize (data) {
+    if (this.contentType === MimeType.ALL) {
+      return this.json(data)
+    }
+
     if (this.contentType === MimeType.APPLICATION_JSON) {
       return this.json(data)
     }
