@@ -2,9 +2,10 @@ const categoryRouter = require('./category.router')
 const NotFoundException = require('../entities/errors/NotFoundException')
 const InvalidArgumentException = require('../entities/errors/InvalidArgumentException')
 const InvalidContentTypeException = require('../entities/errors/InvalidContentTypeException')
-const { MimeType } = require('../infrastructure/http/serializer')
+const { MimeType, Serializer } = require('../infrastructure/http/serializer')
 
 const routes = (app) => {
+  /* intercept */
   app.use((req, res, next) => {
     const contentType = req.header('Accept')
 
@@ -16,31 +17,27 @@ const routes = (app) => {
     next()
   })
 
+  /* routes */
   app.use('/api/categories', categoryRouter)
   
   /* error handler */
   app.use((error, req, res, next) => {
+    const serializer = new Serializer(res.getHeader('Content-Type'))
+
     if (error instanceof NotFoundException) {
-      res.status(404).json({
-        message: error.message,
-        code: error.code
-      })
+      res.status(404)
     } else if (error instanceof InvalidArgumentException) {
-      res.status(400).json({
-        message: error.message,
-        code: error.code
-      })
+      res.status(400)
     } else if (error instanceof InvalidContentTypeException) {
-      res.status(406).json({
-        message: error.message,
-        code: error.code
-      })
+      res.status(406)
     } else {
-      res.status(400).json({
-        message: error.message,
-        code: error.code
-      })
+      res.status(400)
     }
+
+    res.send(serializer.serialize({
+      message: error.message,
+      code: error.code
+    }))
   })
 }
 

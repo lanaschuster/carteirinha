@@ -8,7 +8,7 @@ const router = Router()
 
 router.get('/', async (req, res, next) => {
   try {
-    const list = await Category.findAll({ raw: true })
+    const list = await Category.findAll()
     const serializer = new Serializer(res.getHeader('Content-Type'))
     res.status(200).send(serializer.serialize(list))
   } catch (error) {

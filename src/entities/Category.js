@@ -49,7 +49,7 @@ class Category {
   }
 
   static async findAll() {
-    return await CategoryRepository.findAll()
+    return await CategoryRepository.findAll({ raw: true })
   }
 
   static find() {
