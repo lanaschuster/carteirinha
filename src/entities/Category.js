@@ -1,5 +1,6 @@
 const CategoryRepository = require('../infrastructure/database/setup').category
 const InvalidArgumentException = require('../entities/errors/InvalidArgumentException')
+const NotFoundException = require('../entities/errors/NotFoundException')
 
 class Category {
   constructor({ id, description, name, type, createdAt, updatedAt, version }) {
@@ -59,8 +60,25 @@ class Category {
     // TODO
   }
 
-  static findById() {
-    // TODO
+  static findById(id) {
+    return CategoryRepository.findOne({
+      where: { id: id },
+      raw: true
+    }).then(r => {
+      if (!r) 
+        throw new NotFoundException('Category')
+      
+      const result = {
+        id: r.id,
+        description: r.description,
+        name: r.name,
+        type: r.type
+      }
+
+      return Promise.resolve(result)
+    }).catch(err => {
+      return Promise.reject(err)
+    })
   }
 
   static async findAll() {
