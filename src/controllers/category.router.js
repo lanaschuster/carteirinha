@@ -34,4 +34,22 @@ router.post('/', async (req, res, next) => {
   }
 })
 
+router.put('/:id', async (req, res, next) => {
+  let transaction
+  
+  try {
+    transaction = await db.sequelize.transaction()
+    const category = new Category(req.body)
+    category.id = req.params.id
+    await category.update()
+    
+    res.status(204).send()
+
+    await transaction.commit()
+  } catch (error) {
+    if (transaction) await transaction.rollback()
+    next(error)
+  }
+})
+
 module.exports = router

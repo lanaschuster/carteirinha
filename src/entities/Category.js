@@ -13,7 +13,7 @@ class Category {
   }
 
   validate() {
-    const fields = ['name', 'description']
+    const fields = ['name', 'description', 'type']
     fields.forEach(field => {
       const value = this[field]
 
@@ -37,7 +37,22 @@ class Category {
   }
 
   update() {
-    // TODO
+    this.validate()
+    return CategoryRepository.findOne({
+      where: { id: this.id },
+    }).then(async r => {
+      if (r) {
+        r.description = this.description
+        r.name = this.name
+        r.type = this.type
+  
+        await r.save()
+      }
+
+      return Promise.resolve()
+    }).catch(err => {
+      return Promise.reject(err)
+    })
   }
 
   remove() {

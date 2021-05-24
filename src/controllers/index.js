@@ -19,6 +19,10 @@ const routes = (app) => {
 
   /* routes */
   app.use('/api/categories', categoryRouter)
+
+  app.use('*', (req, res, next) => {
+    throw new NotFoundException('Resource')
+  })
   
   /* error handler */
   app.use((error, req, res, next) => {
