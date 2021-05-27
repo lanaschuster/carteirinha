@@ -6,6 +6,18 @@ const { Serializer } = require('../infrastructure/http/serializer')
 
 const router = Router()
 
+router.options('/', (req, res) => {
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  res.status(200).end() // some legacy browsers (IE11, various SmartTVs) choke on 204
+})
+
+router.options('/:id', (req, res) => {
+  res.setHeader('Access-Control-Allow-Methods', 'GET, PUT')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  res.status(200).end()
+})
+
 router.get('/', async (req, res, next) => {
   try {
     const list = await Category.findAll()

@@ -14,6 +14,7 @@ const routes = (app) => {
     }
 
     res.setHeader('Content-Type', contentType)
+    res.setHeader('Access-Control-Allow-Origin', '*')
     next()
   })
 
