@@ -30,6 +30,6 @@ module.exports = (Sequelize, sequelize) => {
     freezeTableName: true,
     version: 'version',
     createdAt: 'createdAt',
-    updateAt: 'updateAt'
+    updateAt: 'updatedAt'
   })
 }

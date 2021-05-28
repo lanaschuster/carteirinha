@@ -1,10 +1,14 @@
 const categoryRouter = require('./category.router')
+const userRouter = require('./user.router')
+
+const { MimeType, Serializer } = require('../infrastructure/http/serializer')
 const NotFoundException = require('../entities/errors/NotFoundException')
 const InvalidArgumentException = require('../entities/errors/InvalidArgumentException')
 const InvalidContentTypeException = require('../entities/errors/InvalidContentTypeException')
-const { MimeType, Serializer } = require('../infrastructure/http/serializer')
+
 
 const routes = (app) => {
+
   /* intercept */
   app.use((req, res, next) => {
     const contentType = req.header('Accept')
@@ -20,12 +24,13 @@ const routes = (app) => {
 
   /* routes */
   app.use('/api/categories', categoryRouter)
+  app.use('/api/users', userRouter)
 
+  
+  /* error handler */
   app.use('*', (req, res, next) => {
     throw new NotFoundException('Resource')
   })
-  
-  /* error handler */
   app.use((error, req, res, next) => {
     const serializer = new Serializer(res.getHeader('Content-Type'))
 

@@ -55,6 +55,14 @@ module.exports = {
         allowNull: false,
         primaryKey: true
       },
+      createdAt: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('NOW')
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('NOW')
+      },
       version: {
         type: Sequelize.INTEGER,
         allowNull: false
@@ -145,6 +153,14 @@ module.exports = {
         autoIncrement: true,
         allowNull: false,
         primaryKey: true
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('NOW')
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('NOW')
       },
       version: {
         type: Sequelize.INTEGER,
