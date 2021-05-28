@@ -7,6 +7,7 @@ const BearerStrategy = require('passport-http-bearer').Strategy
 const User = require('../../entities/User')
 const InvalidArgumentException = require('../../entities/errors/InvalidArgumentException')
 
+
 const validateUser = user => {
   if (!user) throw new InvalidArgumentException('email or password')
 }
@@ -36,6 +37,20 @@ passport.use(
       } catch (error) {
         done(error)
       }
+    }
+  )
+)
+
+passport.use(
+  new BearerStrategy(
+    async (token, done) => {
+      try {
+        const payload = jwt.verify(token, process.env.JWT_SECRET)
+        const user = await User.findById(payload.id)
+        done(null, user)
+      } catch (error) {
+        done(error)
+      }      
     }
   )
 )

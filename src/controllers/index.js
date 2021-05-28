@@ -7,6 +7,7 @@ const NotFoundException = require('../entities/errors/NotFoundException')
 const InvalidArgumentException = require('../entities/errors/InvalidArgumentException')
 const InvalidContentTypeException = require('../entities/errors/InvalidContentTypeException')
 
+const authMiddleware = require('../infrastructure/auth/middleware')
 
 const routes = (app) => {
 
@@ -24,7 +25,7 @@ const routes = (app) => {
   })
 
   /* routes */
-  app.use('/api/categories', categoryRouter)
+  app.use('/api/categories', authMiddleware.bearer, categoryRouter)
   app.use('/api/users', userRouter)
   app.use('/auth', authRouter)
 

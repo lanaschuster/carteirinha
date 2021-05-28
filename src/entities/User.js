@@ -64,6 +64,13 @@ class User {
       raw: true 
     })
   }
+
+  static async findById(id) {
+    return await UserRepository.findOne({ 
+      where: { id: id },
+      raw: true 
+    })
+  }
 }
 
 module.exports = User
