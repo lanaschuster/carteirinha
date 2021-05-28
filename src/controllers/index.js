@@ -1,5 +1,6 @@
 const categoryRouter = require('./category.router')
 const userRouter = require('./user.router')
+const authRouter = require('./auth.router')
 
 const { MimeType, Serializer } = require('../infrastructure/http/serializer')
 const NotFoundException = require('../entities/errors/NotFoundException')
@@ -25,6 +26,7 @@ const routes = (app) => {
   /* routes */
   app.use('/api/categories', categoryRouter)
   app.use('/api/users', userRouter)
+  app.use('/auth', authRouter)
 
   
   /* error handler */

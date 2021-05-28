@@ -48,9 +48,10 @@ class User {
     })
   }
 
-  static encodePassword(password) {
-    const cost = 12
-    return bcrypt.hash(password, cost)
+  static async encodePassword(password) {
+    const salt = await bcrypt.genSalt(12)
+    const hash = await bcrypt.hash(password, salt)
+    return hash
   }
 
   static async findAll() {
