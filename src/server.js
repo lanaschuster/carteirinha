@@ -1,5 +1,6 @@
 const app = require('./app')
 const db = require('./infrastructure/database/setup')
+require('../redis/blacklist')
 
 const PORT = process.env.PORT || 9000
 

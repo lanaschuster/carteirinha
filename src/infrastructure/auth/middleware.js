@@ -7,7 +7,7 @@ module.exports = {
       'local',
       { session: false },
       (error, user, info) => {
-        if (error && error.name === 'InvalidArgument') {
+        if (error && error.name === 'InvalidArgumentError') {
           return res.status(400).json({ error: error.message })
         }
 
@@ -29,8 +29,12 @@ module.exports = {
       'bearer',
       { session: false },
       (error, user, info) => {
-        if (error && error.name === 'JsonWebToken') {
+        if (error && error.name === 'JsonWebTokenError') {
           return res.status(401).json({ error: error.message })
+        }
+
+        if (error && error.name === 'TokenExpiredError') {
+          return res.status(401).json({ error: error.message, expiredAt: error.expiredAt })
         }
 
         if (error) {
@@ -41,6 +45,7 @@ module.exports = {
           return res.status(401).json()
         }
 
+        req.token = info.token
         req.user = user
         return next()
       }

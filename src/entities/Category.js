@@ -1,6 +1,6 @@
 const CategoryRepository = require('../infrastructure/database/setup').category
-const InvalidArgumentException = require('../entities/errors/InvalidArgumentException')
-const NotFoundException = require('../entities/errors/NotFoundException')
+const InvalidArgumentError = require('./errors/InvalidArgumentError')
+const NotFoundError = require('./errors/NotFoundError')
 
 class Category {
   constructor({ id, description, name, type, createdAt, updatedAt, version }) {
@@ -19,7 +19,7 @@ class Category {
       const value = this[field]
 
       if (typeof value !== 'string' || value.length === 0) {
-        throw new InvalidArgumentException(field)
+        throw new InvalidArgumentError(field)
       }
     })
   }
@@ -66,7 +66,7 @@ class Category {
       raw: true
     }).then(r => {
       if (!r) 
-        throw new NotFoundException('Category')
+        throw new NotFoundError('Category')
       
       const result = {
         id: r.id,

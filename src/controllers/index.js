@@ -3,9 +3,11 @@ const userRouter = require('./user.router')
 const authRouter = require('./auth.router')
 
 const { MimeType, Serializer } = require('../infrastructure/http/serializer')
-const NotFoundException = require('../entities/errors/NotFoundException')
-const InvalidArgumentException = require('../entities/errors/InvalidArgumentException')
-const InvalidContentTypeException = require('../entities/errors/InvalidContentTypeException')
+const NotFoundError = require('../entities/errors/NotFoundError')
+const InvalidArgumentError = require('../entities/errors/InvalidArgumentError')
+const InvalidContentTypeError = require('../entities/errors/InvalidContentTypeError')
+const InternalServerError = require('../entities/errors/InternalServerError')
+
 
 const authMiddleware = require('../infrastructure/auth/middleware')
 
@@ -16,7 +18,7 @@ const routes = (app) => {
     const contentType = req.header('Accept')
 
     if (Object.values(MimeType).indexOf(contentType) === -1) {
-      throw new InvalidContentTypeException(contentType)
+      throw new InvalidContentTypeError(contentType)
     }
 
     res.setHeader('Content-Type', contentType)
@@ -32,17 +34,19 @@ const routes = (app) => {
   
   /* error handler */
   app.use('*', (req, res, next) => {
-    throw new NotFoundException('Resource')
+    throw new NotFoundError('Resource')
   })
   app.use((error, req, res, next) => {
     const serializer = new Serializer(res.getHeader('Content-Type'))
 
-    if (error instanceof NotFoundException) {
+    if (error instanceof NotFoundError) {
       res.status(404)
-    } else if (error instanceof InvalidArgumentException) {
+    } else if (error instanceof InvalidArgumentError) {
       res.status(400)
-    } else if (error instanceof InvalidContentTypeException) {
+    } else if (error instanceof InvalidContentTypeError) {
       res.status(406)
+    } else if (error instanceof InternalServerError) {
+      res.status(500)
     } else {
       res.status(400)
     }

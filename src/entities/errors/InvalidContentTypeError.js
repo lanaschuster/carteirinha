@@ -1,4 +1,4 @@
-class InvalidContentTypeException extends Error {
+class InvalidContentTypeError extends Error {
   constructor(contentType) {
     super(`Format given on 'Content-Type' header not accepted: ${contentType}`)
     this.name = 'InvalidContentType'
@@ -6,4 +6,4 @@ class InvalidContentTypeException extends Error {
   }
 }
 
-module.exports = InvalidContentTypeException
+module.exports = InvalidContentTypeError

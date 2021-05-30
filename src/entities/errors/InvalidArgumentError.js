@@ -1,4 +1,4 @@
-class InvalidArgumentException extends Error {
+class InvalidArgumentError extends Error {
   constructor(argument) {
     super(`the argument '${argument}' is invalid`)
     this.name = 'InvalidArgument'
@@ -6,4 +6,4 @@ class InvalidArgumentException extends Error {
   }
 }
 
-module.exports = InvalidArgumentException
+module.exports = InvalidArgumentError

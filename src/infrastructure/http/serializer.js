@@ -1,6 +1,6 @@
 const { x } = require('joi')
 const jsontoxml = require('jsontoxml')
-const InvalidContentTypeException = require('../../entities/errors/InvalidContentTypeException')
+const InvalidContentTypeError = require('../../entities/errors/InvalidContentTypeError')
 
 const MimeType = {
   ALL: '*/*',
@@ -34,7 +34,7 @@ class Serializer {
       return this.xml(data)
     }
 
-    throw new InvalidContentTypeException(this.contentType)
+    throw new InvalidContentTypeError(this.contentType)
   }
 }
 

@@ -1,4 +1,4 @@
-class NotFoundException extends Error {
+class NotFoundError extends Error {
   constructor(entityName) {
     super(`${entityName} not found`)
     this.name = 'NotFound'
@@ -6,4 +6,4 @@ class NotFoundException extends Error {
   }
 }
 
-module.exports = NotFoundException
+module.exports = NotFoundError

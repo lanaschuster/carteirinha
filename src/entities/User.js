@@ -1,6 +1,5 @@
 const UserRepository = require('../infrastructure/database/setup').user
-const InvalidArgumentException = require('../entities/errors/InvalidArgumentException')
-const NotFoundException = require('../entities/errors/NotFoundException')
+const InvalidArgumentError = require('./errors/InvalidArgumentError')
 
 const bcrypt = require('bcrypt')
 
@@ -23,13 +22,13 @@ class User {
       const value = this[field]
 
       if (typeof value !== 'string' || value.length === 0) {
-        throw new InvalidArgumentException(field)
+        throw new InvalidArgumentError(field)
       }
     })
 
     const exists = await User.findByEmail(this.email)
     if (exists) {
-      throw new InvalidArgumentException('email')
+      throw new InvalidArgumentError('email')
     }
   }
 
