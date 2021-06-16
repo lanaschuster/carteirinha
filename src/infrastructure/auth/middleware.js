@@ -1,5 +1,6 @@
 const passport = require('passport')
-
+const { verify, invalidate } = require('./refreshToken')
+const User = require('../../entities/User')
 
 module.exports = {
   local: (req, res, next) => {
@@ -24,6 +25,7 @@ module.exports = {
       }
     )(req, res, next)
   },
+
   bearer: (req, res, next) => {
     passport.authenticate(
       'bearer',
@@ -50,5 +52,17 @@ module.exports = {
         return next()
       }
     )(req, res, next)
+  },
+
+  refresh: async (req, res, next) => {
+    try {
+      const { refreshToken } = req.body
+      const id = await verify(refreshToken)
+      await invalidate(refreshToken)
+      req.user = await User.findById(id)
+      return next()
+    } catch (error) {
+      return next(error)
+    }
   }
 }
