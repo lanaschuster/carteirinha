@@ -1,6 +1,6 @@
 const Router = require('express')
 const authMiddleware = require('../infrastructure/auth/middleware')
-const blacklist = require('../../redis/blacklistController')
+const blocklist = require('../../redis/accessTokenBlocklist')
 
 const InternalServerError = require('../entities/errors/InternalServerError')
 
@@ -25,7 +25,7 @@ router.post('/login', authMiddleware.local, async (req, res, next) => {
 router.get('/logout', authMiddleware.bearer, async (req, res, next) => {
   try {
     const token = req.token
-    await blacklist.add(token)
+    await blocklist.add(token)
     res.status(204).send()
   } catch (error) {
     throw new InternalServerError(error.message)
