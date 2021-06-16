@@ -1,7 +1,7 @@
 const UserRepository = require('../infrastructure/database/setup').user
 const InvalidArgumentError = require('./errors/InvalidArgumentError')
 
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt') // TODO: remove dep from model
 
 class User {
   constructor({ id, name, lastName, email, password, avatar, createdAt, updatedAt, version }) {

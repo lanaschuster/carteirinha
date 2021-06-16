@@ -1,18 +1,22 @@
 const Router = require('express')
-
-const { generateJwt } = require('../infrastructure/auth/jwt')
 const authMiddleware = require('../infrastructure/auth/middleware')
 const blacklist = require('../../redis/blacklistController')
 
 const InternalServerError = require('../entities/errors/InternalServerError')
 
+const { 
+  generateJwt, 
+  generateOpaqueToken 
+} = require('../infrastructure/auth/jwt')
+
 const router = Router()
 
-router.post('/login', authMiddleware.local, (req, res, next) => {
+router.post('/login', authMiddleware.local, async (req, res, next) => {
   try {
-    const token = generateJwt(req.user)
-    res.setHeader('Authorization', token)
-    res.status(204).send()
+    const accessToken = generateJwt(req.user)
+    const refreshToken = await generateOpaqueToken(req.user)
+    res.setHeader('Authorization', accessToken)
+    res.status(200).json({ refreshToken })
   } catch (error) {
     throw new InternalServerError(error.message)
   }
