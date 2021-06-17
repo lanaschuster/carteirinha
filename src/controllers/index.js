@@ -1,6 +1,7 @@
 const categoryRouter = require('./category.router')
 const userRouter = require('./user.router')
-const authRouter = require('./auth.router')
+const userPublicRouter = require('./user.public.router')
+const authRouter = require('./auth.public.router')
 
 const { MimeType, Serializer } = require('../infrastructure/http/serializer')
 const NotFoundError = require('../entities/errors/NotFoundError')
@@ -28,8 +29,9 @@ const routes = (app) => {
 
   /* routes */
   app.use('/api/categories', authMiddleware.bearer, categoryRouter)
-  app.use('/api/users', userRouter)
-  app.use('/auth', authRouter)
+  app.use('/api/users', authMiddleware.bearer, userRouter)
+  app.use('/public/users', userPublicRouter)
+  app.use('/public/auth', authRouter)
 
   
   /* error handler */

@@ -1,3 +1,4 @@
+const { Op } = require('sequelize')
 const CategoryRepository = require('../infrastructure/database/setup').category
 const InvalidArgumentError = require('./errors/InvalidArgumentError')
 const NotFoundError = require('./errors/NotFoundError')
@@ -85,8 +86,44 @@ class Category {
     return await CategoryRepository.findAll({ raw: true })
   }
 
-  static find() {
-    // TODO busca paginada
+  static find(page, size = 5, sort = 'name', direction = 'ASC', filter = undefined) {
+    const offset = size * (page-1)
+    const condition = !filter 
+      ? undefined
+      : {
+          [Op.or]: [
+            {
+              name: { [Op.like]: `%${filter}%` }
+            },
+            {
+              description: { [Op.like]: `%${filter}%`}
+            },
+            {
+              type: { [Op.like]: `%${filter}%`}
+            }
+          ]
+        }
+
+    return CategoryRepository.findAndCountAll({
+        raw: true,
+        where: condition,
+        offset: offset,
+        limit: size,
+        order: [
+          [sort, direction]
+        ]
+      })
+      .then(categories => {
+        const pages = Math.ceil(categories.count / size)
+        return {
+          pages,
+          count: categories.count,
+          result: categories.rows
+        }
+      })
+      .catch(err => {
+        return Promise.reject(err)
+      })
   }
 }
 

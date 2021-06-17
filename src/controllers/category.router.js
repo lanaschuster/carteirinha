@@ -3,6 +3,7 @@ const Router = require('express')
 const Category = require('../entities/Category')
 const db = require('../infrastructure/database/setup')
 const { Serializer } = require('../infrastructure/http/serializer')
+const InvalidArgumentError = require('../entities/errors/InvalidArgumentError')
 
 const router = Router()
 
@@ -20,7 +21,17 @@ router.options('/:id', (req, res) => {
 
 router.get('/', async (req, res, next) => {
   try {
-    const list = await Category.findAll()
+    if (!req.query.page) {
+      throw new InvalidArgumentError('\'page\' query not provided')
+    }
+
+    const page = req.query.page
+    const size = req.query.size
+    const sort = req.query.sort
+    const direction = req.query.direction
+    const filter = req.query.filter
+
+    const list = await Category.find(page, size, sort, direction, filter)
     const serializer = new Serializer(res.getHeader('Content-Type'))
     res.status(200).send(serializer.serialize(list))
   } catch (error) {
