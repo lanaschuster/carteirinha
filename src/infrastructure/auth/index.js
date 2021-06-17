@@ -1,9 +1,9 @@
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt') // TODO: tirar bcrypt daqui!
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const BearerStrategy = require('passport-http-bearer').Strategy
 
+const TokenFactory = require('../tokens/TokenFactory')
 const User = require('../../entities/User')
 const InvalidArgumentError = require('../../entities/errors/InvalidArgumentError')
 
@@ -18,13 +18,6 @@ const checkPassword = async (providedPassword, userPassword) => {
 
   if (!isValid) {
     throw new InvalidArgumentError('email or password')
-  }
-}
-
-const checkBlocklist = async token => {
-  const blocklistToken = await blocklist.hasToken(token)
-  if (blocklistToken) {
-    throw new jwt.JsonWebTokenError('token invalid by logout')
   }
 }
 
@@ -53,8 +46,9 @@ passport.use(
   new BearerStrategy(
     async (token, done) => {
       try {
-        await checkBlocklist(token)
-        const payload = jwt.verify(token, process.env.JWT_SECRET)
+        await blocklist.checkToken(token)
+        const jwt = TokenFactory.create('JWT')
+        const payload = jwt.verify(token)
         const user = await User.findById(payload.id)
         done(null, user, { token })
       } catch (error) {

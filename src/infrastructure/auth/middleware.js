@@ -1,5 +1,5 @@
 const passport = require('passport')
-const { verify, invalidate } = require('./refreshToken')
+const TokenFactory = require('../tokens/TokenFactory')
 const User = require('../../entities/User')
 
 module.exports = {
@@ -57,8 +57,9 @@ module.exports = {
   refresh: async (req, res, next) => {
     try {
       const { refreshToken } = req.body
-      const id = await verify(refreshToken)
-      await invalidate(refreshToken)
+      const refreshTokenUtils = TokenFactory.create('REFRESH')
+      const id = await refreshTokenUtils.verify(refreshToken)
+      await refreshTokenUtils.invalidate(refreshToken)
       req.user = await User.findById(id)
       return next()
     } catch (error) {

@@ -13,14 +13,20 @@ function hashToken(token) {
 }
 
 module.exports = {
-  add: async token => {
+  async add(token) {
     const ts = jwt.decode(token).exp
     const hash = hashToken(token)
     
     await blocklistCommands.add(hash, '', ts)
   },
-  hasToken: token => {
+  hasToken(token) {
     const hash = hashToken(token)
     return blocklistCommands.hasKey(hash)
+  },
+  async checkToken(token) {
+    const blocklistToken = await this.hasToken(token)
+    if (blocklistToken) {
+      throw new jwt.JsonWebTokenError('token invalid by logout')
+    }
   }
 }

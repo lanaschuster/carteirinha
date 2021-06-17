@@ -1,11 +1,7 @@
 const Router = require('express')
 const authMiddleware = require('../infrastructure/auth/middleware')
-const blocklist = require('../../redis/accessTokenBlocklist')
-
+const TokenFactory = require('../infrastructure/tokens/TokenFactory')
 const InternalServerError = require('../entities/errors/InternalServerError')
-
-const { generateJwt } = require('../infrastructure/auth/jwt')
-const { generateOpaqueToken } = require('../infrastructure/auth/refreshToken')
 
 
 const router = Router()
@@ -19,7 +15,8 @@ router.post('/logout',
   async (req, res, next) => {
     try {
       const token = req.token
-      await blocklist.add(token)
+      const jwt = TokenFactory.create('JWT')
+      await jwt.invalidate(token)
       res.status(204).send()
     } catch (error) {
       throw new InternalServerError(error.message)
@@ -28,8 +25,11 @@ router.post('/logout',
 
 async function login(req, res, next) {
   try {
-    const accessToken = generateJwt(req.user)
-    const refreshToken = await generateOpaqueToken(req.user)
+    const jwt = TokenFactory.create('JWT')
+    const refreshTokenUtils = TokenFactory.create('REFRESH') 
+
+    const accessToken = await jwt.generate(req.user.id, [1, 'h'])
+    const refreshToken = await refreshTokenUtils.generate(req.user.id, [5, 'd'])
     res.setHeader('Authorization', accessToken)
     res.status(200).json({ refreshToken })
   } catch (error) {
