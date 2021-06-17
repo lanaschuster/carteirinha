@@ -9,7 +9,7 @@ const blocklist = require('../../../redis/accessTokenBlocklist')
 const InvalidArgumentError = require('../../entities/errors/InvalidArgumentError')
 
 const validateUser = user => {
-  if (!user) throw new InvalidArgumentError('email or password')
+  if (!user) throw new InvalidArgumentError('password or email are incorrect or invalid')
 }
 
 passport.use(

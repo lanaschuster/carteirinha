@@ -1,6 +1,6 @@
 class InvalidArgumentError extends Error {
-  constructor(argument) {
-    super(`the argument '${argument}' is invalid`)
+  constructor(message) {
+    super(message)
     this.name = 'InvalidArgument'
     this.code = '0'
   }

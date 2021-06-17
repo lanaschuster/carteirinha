@@ -19,7 +19,7 @@ class Category {
       const value = this[field]
 
       if (typeof value !== 'string' || value.length === 0) {
-        throw new InvalidArgumentError(field)
+        throw new InvalidArgumentError(`the field ${field} is invalid`)
       }
     })
   }

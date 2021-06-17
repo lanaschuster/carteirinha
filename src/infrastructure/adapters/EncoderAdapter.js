@@ -18,7 +18,7 @@ class EncoderAdapter {
   async compare(password, hash) {
     const isValid = await bcrypt.compare(password, hash)
     if (!isValid) {
-      throw new InvalidArgumentError('email or password')
+      throw new InvalidArgumentError('password or email are incorrect or invalid')
     }
   }
 }

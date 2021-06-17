@@ -22,13 +22,13 @@ class User {
       const value = this[field]
 
       if (typeof value !== 'string' || value.length === 0) {
-        throw new InvalidArgumentError(field)
+        throw new InvalidArgumentError(`the field ${field} is invalid`)
       }
     })
 
     const exists = await User.findByEmail(this.email)
     if (exists) {
-      throw new InvalidArgumentError('email')
+      throw new InvalidArgumentError(`the field 'email' is invalid`)
     }
   }
 

@@ -14,12 +14,12 @@ class RefreshToken {
 
   async verify(token) {
     if (!token) {
-      throw new InvalidArgumentError('refreshToken')
+      throw new InvalidArgumentError('refreshToken is invalid')
     }
   
     const id = await refreshTokenAllowList.get(token)
     if (!id) {
-      throw new InvalidArgumentError('refreshToken')
+      throw new InvalidArgumentError('refreshToken is invalid')
     }
     
     return id
