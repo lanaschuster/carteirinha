@@ -1,7 +1,7 @@
 const UserRepository = require('../infrastructure/database/setup').user
 const InvalidArgumentError = require('./errors/InvalidArgumentError')
 
-const bcrypt = require('bcrypt') // TODO: remove dep from model
+const EncoderAdapter = require('../infrastructure/adapters/EncoderAdapter')
 
 class User {
   constructor({ id, name, lastName, email, password, avatar, createdAt, updatedAt, version }) {
@@ -34,23 +34,19 @@ class User {
 
   async add() {
     await this.validate()
+    const encoder = new EncoderAdapter()
+
     return UserRepository.create({
       name: this.name,
       lastName: this.lastName,
       email: this.email,
-      password: await User.encodePassword(this.password),
+      password: await encoder.encode(this.password),
       avatar: this.avatar
     }).then(r => {
       return Promise.resolve({ id: r.id })
     }).catch(err => {
       return Promise.reject(err)
     })
-  }
-
-  static async encodePassword(password) {
-    const salt = await bcrypt.genSalt(12)
-    const hash = await bcrypt.hash(password, salt)
-    return hash
   }
 
   static async findAll() {

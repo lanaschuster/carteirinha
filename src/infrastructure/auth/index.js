@@ -1,24 +1,15 @@
-const bcrypt = require('bcrypt') // TODO: tirar bcrypt daqui!
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const BearerStrategy = require('passport-http-bearer').Strategy
 
+const EncoderAdapter = require('../adapters/EncoderAdapter')
 const TokenFactory = require('../tokens/TokenFactory')
 const User = require('../../entities/User')
-const InvalidArgumentError = require('../../entities/errors/InvalidArgumentError')
-
 const blocklist = require('../../../redis/accessTokenBlocklist')
+const InvalidArgumentError = require('../../entities/errors/InvalidArgumentError')
 
 const validateUser = user => {
   if (!user) throw new InvalidArgumentError('email or password')
-}
-
-const checkPassword = async (providedPassword, userPassword) => {
-  const isValid = await bcrypt.compare(providedPassword, userPassword)
-
-  if (!isValid) {
-    throw new InvalidArgumentError('email or password')
-  }
 }
 
 passport.use(
@@ -30,9 +21,10 @@ passport.use(
     },
     async (email, password, done) => {
       try {
+        const encoder = new EncoderAdapter()
         const user = await User.findByEmail(email)
         validateUser(user)
-        await checkPassword(password, user.password)
+        await encoder.compare(password, user.password)
 
         done(null, user)
       } catch (error) {
