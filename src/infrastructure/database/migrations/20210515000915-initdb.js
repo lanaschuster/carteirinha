@@ -83,6 +83,10 @@ module.exports = {
         type: Sequelize.STRING(60),
         allowNull: false
       },
+      isEmailVerified: {
+        type: Sequelize.INTEGER,
+        default: 0
+      },
       avatar: {
         type: Sequelize.STRING
       }

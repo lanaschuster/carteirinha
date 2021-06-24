@@ -1,7 +1,9 @@
 const UserRepository = require('../infrastructure/database/setup').user
 const InvalidArgumentError = require('./errors/InvalidArgumentError')
 
+const TokenFactory = require('../infrastructure/tokens/TokenFactory')
 const EncoderAdapter = require('../infrastructure/adapters/EncoderAdapter')
+const EmailConfirmationMailer = require('../infrastructure/mail/EmailConfirmationMailer')
 
 class User {
   constructor({ id, name, lastName, email, password, avatar, createdAt, updatedAt, version }) {
@@ -41,10 +43,29 @@ class User {
       lastName: this.lastName,
       email: this.email,
       password: await encoder.encode(this.password),
-      avatar: this.avatar
+      avatar: this.avatar,
+      isEmailVerified: 0
     }).then(r => {
+      const token = TokenFactory.create('JWT').generate(r.id, [1, 'h'])
+      EmailConfirmationMailer.send(r.email, token)
       return Promise.resolve({ id: r.id })
     }).catch(err => {
+      return Promise.reject(err)
+    })
+  }
+
+  static async verifyEmail(token) {
+    const payload = TokenFactory.create('JWT').verify(token)
+
+    return await UserRepository.findOne({ 
+      where: { id: payload.id },
+    })
+    .then(async r => {
+      r.isEmailVerified = 1
+      await r.save()
+      return Promise.resolve()
+    })
+    .catch(err => {
       return Promise.reject(err)
     })
   }

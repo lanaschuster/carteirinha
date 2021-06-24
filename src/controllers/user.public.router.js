@@ -24,4 +24,23 @@ router.post('/', async (req, res, next) => {
   }
 })
 
+router.get('/check-email/:token', async (req, res, next) => {
+  let transaction
+  
+  try {
+    transaction = await db.sequelize.transaction()
+    // const id = TokenFactory.create('JWT').verify(req.params)
+    // const user = await User.findById(req.params.id)
+    const result = await User.verifyEmail(req.params.token)
+    
+    const serializer = new Serializer(res.getHeader('Content-Type'))
+    res.status(200).send(serializer.serialize(result))
+
+    await transaction.commit()
+  } catch (error) {
+    if (transaction) await transaction.rollback()
+    next(error)
+  }
+})
+
 module.exports = router
