@@ -29,8 +29,6 @@ router.get('/check-email/:token', async (req, res, next) => {
   
   try {
     transaction = await db.sequelize.transaction()
-    // const id = TokenFactory.create('JWT').verify(req.params)
-    // const user = await User.findById(req.params.id)
     const result = await User.verifyEmail(req.params.token)
     
     const serializer = new Serializer(res.getHeader('Content-Type'))
