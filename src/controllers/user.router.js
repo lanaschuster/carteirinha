@@ -5,6 +5,12 @@ const { Serializer } = require('../infrastructure/http/serializer')
 
 const router = Router()
 
+router.options('/', (req, res) => {
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  res.status(200).end()
+})
+
 /**
  * @swagger
  * /api/users:
@@ -35,6 +41,12 @@ router.get('/', async (req, res, next) => {
  *  post:
  *    summary: Create a new user
  *    tags: [Users]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/User'
  *    responses:
  *      201:
  *        description: user created
@@ -53,6 +65,51 @@ router.post('/', async (req, res, next) => {
     
     const serializer = new Serializer(res.getHeader('Content-Type'))
     res.status(201).send(serializer.serialize(result))
+
+    await transaction.commit()
+  } catch (error) {
+    if (transaction) await transaction.rollback()
+    next(error)
+  }
+})
+
+/**
+ * @swagger
+ * /api/users/{id}:
+ *  put:
+ *    summary: Update user's data
+ *    tags: [Users]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: integer
+ *        required: true
+ *        description: the user id
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/User'
+ *    responses:
+ *      204:
+ *        description: no content
+ *      401:
+ *        description: not authorized
+ *      500:
+ *        description: internal server error
+ */
+router.put('/:id', async (req, res, next) => {
+  let transaction
+  
+  try {
+    transaction = await db.sequelize.transaction()
+    const user = new User(req.body)
+    user.id = req.params.id
+    await user.update()
+    
+    res.status(204).send()
 
     await transaction.commit()
   } catch (error) {

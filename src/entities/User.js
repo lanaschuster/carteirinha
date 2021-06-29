@@ -54,6 +54,30 @@ class User {
     })
   }
 
+  update() {
+    return UserRepository.findOne({
+      where: { id: this.id },
+    }).then(async r => {
+      if (r) {
+        r.name = this.name ? this.name : r.name
+        r.lastName = this.lastName ? this.lastName : r.lastName
+        r.type = this.type ? this.type : r.type
+        r.avatar = this.avatar ? this.avatar : r.avatar
+        
+        if (this.password) {
+          const encoder = new EncoderAdapter()
+          r.password = await encoder.encode(this.password)
+        }
+  
+        await r.save()
+      }
+
+      return Promise.resolve()
+    }).catch(err => {
+      return Promise.reject(err)
+    })  
+  }
+
   static async verifyEmail(token) {
     const payload = TokenFactory.create('JWT').verify(token)
 
