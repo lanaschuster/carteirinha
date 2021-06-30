@@ -108,7 +108,7 @@ class Category {
         raw: true,
         where: condition,
         offset: offset,
-        limit: size,
+        limit: +size,
         order: [
           [sort, direction]
         ]

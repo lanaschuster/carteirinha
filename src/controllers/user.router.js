@@ -2,6 +2,7 @@ const Router = require('express')
 const User = require('../entities/User')
 const db = require('../infrastructure/database/setup')
 const { Serializer } = require('../infrastructure/http/serializer')
+const InvalidArgumentError = require('../entities/errors/InvalidArgumentError')
 
 const router = Router()
 
@@ -15,11 +16,37 @@ router.options('/', (req, res) => {
  * @swagger
  * /api/users:
  *  get:
- *    summary: Get all users
+ *    summary: Get users page
  *    tags: [Users]
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        type: integer
+ *        description: the page number (begins with 1)
+ *        minimum: 1
+ *        required: true
+ *      - in: query
+ *        name: size
+ *        type: integer
+ *        description: number of items per page
+ *        default: 5
+ *      - in: query
+ *        name: sort
+ *        type: string
+ *        description: field to be sorted by
+ *        default: name
+ *      - in: query
+ *        name: direction
+ *        type: string
+ *        description: direction of sorting (ASC or DESC)
+ *        default: ASC
+ *      - in: query
+ *        name: filter
+ *        type: string
+ *        description: search items where value like filter
  *    responses:
  *      200:
- *        description: list of users
+ *        description: page of users
  *      401:
  *        description: not authorized
  *      500:
@@ -27,7 +54,17 @@ router.options('/', (req, res) => {
  */
 router.get('/', async (req, res, next) => {
   try {
-    const list = await User.findAll()
+    if (!req.query.page) {
+      throw new InvalidArgumentError('\'page\' query not provided')
+    }
+
+    const page = req.query.page
+    const size = req.query.size
+    const sort = req.query.sort
+    const direction = req.query.direction
+    const filter = req.query.filter
+
+    const list = await User.find(page, size, sort, direction, filter)
     const serializer = new Serializer(res.getHeader('Content-Type'))
     res.status(200).send(serializer.serialize(list))
   } catch (error) {

@@ -1,3 +1,4 @@
+const { Op } = require('sequelize')
 const UserRepository = require('../infrastructure/database/setup').user
 const InvalidArgumentError = require('./errors/InvalidArgumentError')
 
@@ -113,6 +114,46 @@ class User {
       where: { id: id },
       raw: true 
     })
+  }
+
+  static find(page, size = 5, sort = 'name', direction = 'ASC', filter = undefined) {
+    const offset = size * (page-1)
+    const condition = !filter 
+      ? undefined
+      : {
+          [Op.or]: [
+            {
+              name: { [Op.like]: `%${filter}%` }
+            },
+            {
+              lastName: { [Op.like]: `%${filter}%`}
+            },
+            {
+              email: { [Op.like]: `%${filter}%`}
+            }
+          ]
+        }
+
+    return UserRepository.findAndCountAll({
+        raw: true,
+        where: condition,
+        offset: offset,
+        limit: +size,
+        order: [
+          [sort, direction]
+        ]
+      })
+      .then(users => {
+        const pages = Math.ceil(users.count / size)
+        return {
+          pages,
+          count: users.count,
+          result: users.rows
+        }
+      })
+      .catch(err => {
+        return Promise.reject(err)
+      })
   }
 }
 
