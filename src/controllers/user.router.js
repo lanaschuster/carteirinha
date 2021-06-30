@@ -12,6 +12,12 @@ router.options('/', (req, res) => {
   res.status(200).end()
 })
 
+router.options('/:id', (req, res) => {
+  res.setHeader('Access-Control-Allow-Methods', 'GET, PUT')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  res.status(200).end()
+})
+
 /**
  * @swagger
  * /api/users:
@@ -67,6 +73,36 @@ router.get('/', async (req, res, next) => {
     const list = await User.find(page, size, sort, direction, filter)
     const serializer = new Serializer(res.getHeader('Content-Type'))
     res.status(200).send(serializer.serialize(list))
+  } catch (error) {
+    next(error)
+  }
+})
+
+/**
+ * @swagger
+ * /api/users/{id}:
+ *  get:
+ *    summary: Get user by id
+ *    tags: [Users]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        type: integer
+ *        description: the user id
+ *        required: true
+ *    responses:
+ *      200:
+ *        description: page of users
+ *      401:
+ *        description: not authorized
+ *      500:
+ *        description: internal server error
+ */
+router.get('/:id', async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id)
+    const serializer = new Serializer(res.getHeader('Content-Type'))
+    res.status(200).send(serializer.serialize(user))
   } catch (error) {
     next(error)
   }

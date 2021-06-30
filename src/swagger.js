@@ -8,14 +8,14 @@ const options = {
       title: 'Carteirinha - Express API with Swagger',
       version: '1.0.0',
       description:
-        'This is a simple CRUD API application made with Express and documented with Swagger',
+        'Back-end do carteirinha - controle de despesas e incomings',
       license: {
         name: 'MIT',
         url: 'https://spdx.org/licenses/MIT.html',
       },
       contact: {
         name: 'Lana Schuster',
-        email: 'info@email.com',
+        email: 'lanaschuster1@gmail.com',
       },
     },
     servers: [
@@ -24,7 +24,7 @@ const options = {
       },
     ],
   },
-  apis: [`${__dirname}/controllers/user.router.js`],
+  apis: [`${__dirname}/controllers/*.router.js`, `${__dirname}/controllers/*.public.router.js`],
 }
 
 const specs = swaggerJsdoc(options)
