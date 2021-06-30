@@ -4,9 +4,9 @@ Aplicação para controle de despesas (em construção)
 
 ## Dependências
 
-- Redis
-- Mysql
-- Node.js
+- Redis 3.0.504
+- Mysql 15.1 Distrib 10.4.16-MariaDB
+- Node.js 14.15.1
 
 ## Rodando o back-end localmente
 

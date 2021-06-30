@@ -89,7 +89,11 @@ module.exports = {
       },
       avatar: {
         type: Sequelize.STRING
-      }
+      },
+      isActive: {
+        type: Sequelize.INTEGER,
+        default: 1
+      },
     }, {
       charset: 'utf8',
       schema: 'user',

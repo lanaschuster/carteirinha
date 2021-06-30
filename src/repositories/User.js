@@ -27,7 +27,10 @@ module.exports = (Sequelize, sequelize) => {
     },
     avatar: {
       type: Sequelize.STRING
-    }
+    },
+    isActive: {
+      type: Sequelize.INTEGER
+    },
   }, {
     tableName: 'user.users',
     freezeTableName: true,

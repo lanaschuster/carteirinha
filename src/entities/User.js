@@ -6,7 +6,7 @@ const EncoderAdapter = require('../infrastructure/adapters/EncoderAdapter')
 const EmailConfirmationMailer = require('../infrastructure/mail/EmailConfirmationMailer')
 
 class User {
-  constructor({ id, name, lastName, email, password, avatar, createdAt, updatedAt, version }) {
+  constructor({ id, name, lastName, email, password, avatar, createdAt, updatedAt, version, isActive }) {
     this.id = id
     this.name = name
     this.lastName = lastName
@@ -16,6 +16,7 @@ class User {
     this.createdAt = createdAt
     this.updatedAt = updatedAt
     this.version = version
+    this.isActive = isActive
   }
 
   async validate() {
@@ -44,7 +45,8 @@ class User {
       email: this.email,
       password: await encoder.encode(this.password),
       avatar: this.avatar,
-      isEmailVerified: 0
+      isEmailVerified: 0,
+      isActive: 1
     }).then(r => {
       const token = TokenFactory.create('JWT').generate(r.id, [1, 'h'])
       EmailConfirmationMailer.send(r.email, token)
@@ -63,6 +65,7 @@ class User {
         r.lastName = this.lastName ? this.lastName : r.lastName
         r.type = this.type ? this.type : r.type
         r.avatar = this.avatar ? this.avatar : r.avatar
+        r.isActive = this.isActive != undefined ? this.isActive : r.isActive
         
         if (this.password) {
           const encoder = new EncoderAdapter()
