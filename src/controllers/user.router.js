@@ -184,6 +184,9 @@ router.put('/:id', async (req, res, next) => {
  *          isEmailVerified:
  *            type: integer
  *            description: Has value 1 if the user verified its email. Default value = 0
+ *          isActive:
+ *            type: integer
+ *            description: Has value 0 if the user is blocked. Default value = 1
  *          avatar:
  *             type: string
  *             description: user's avatar
