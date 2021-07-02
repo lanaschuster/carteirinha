@@ -58,7 +58,14 @@ class Category {
   }
 
   remove() {
-    // TODO
+    return CategoryRepository.destroy({
+      where: { id: this.id }
+    }).then(r => {
+      return Promise.resolve(r)
+    })
+    .catch(err => {
+      Promise.reject(err)
+    })
   }
 
   static findById(id) {

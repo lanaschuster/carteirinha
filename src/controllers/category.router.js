@@ -194,6 +194,44 @@ router.put('/:id', async (req, res, next) => {
 
 /**
  * @swagger
+ * /api/categories/{id}:
+ *  delete:
+ *    summary: Remove category by id
+ *    tags: [Categories]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: integer
+ *        required: true
+ *        description: the category id
+ *    responses:
+ *      204:
+ *        description: no content
+ *      401:
+ *        description: not authorized
+ *      500:
+ *        description: internal server error
+ */
+router.delete('/:id', async (req, res, next) => {
+  let transaction
+  
+  try {
+    transaction = await db.sequelize.transaction()
+    const category = new Category({ id: req.params.id })
+    await category.remove()
+    
+    res.status(204).send()
+
+    await transaction.commit()
+  } catch (error) {
+    if (transaction) await transaction.rollback()
+    next(error)
+  }
+})
+
+/**
+ * @swagger
  * tags:
  *   name: Categories
  *   description: API para cadastro de categoria de despesas e incomings
